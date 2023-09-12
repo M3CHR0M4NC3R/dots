@@ -1,0 +1,28 @@
+super + Return
+	st
+super + w
+	firefox
+super + e
+	thunderbird
+super + s
+	spotify-launcher
+super + p
+	st -e htop
+super + f
+	st -e ranger
+super + control + v
+	st -e vim
+super + b
+	st -e bluetuith
+super + space
+	rofi -show drun -auto-select
+XF86MonBrightness{Up,Down}  
+	brillo -u 150 -q -{A,U} 5	
+ 
+XF86Audio{Raise,Lower}Volume  
+  pactl set-sink-volume @DEFAULT_SINK@ {+,-}5%  
+ 
+XF86AudioMute  
+  pactl set-sink-mute @DEFAULT_SINK@ toggle
+XF86Audio{Play,Pause,Next,Prev,Stop}
+	playerctl {play-pause,play-pause,next,previous,stop}

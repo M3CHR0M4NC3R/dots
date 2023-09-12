@@ -1,0 +1,52 @@
+// ~/.config/fastfetch/config.jsonc
+// See https://github.com/fastfetch-cli/fastfetch/wiki/Configuration for more details
+// See *.jsonc in https://github.com/fastfetch-cli/fastfetch/tree/dev/presets/examples for more examples
+{
+    "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+    "modules": [
+        "title",
+        "separator",
+        {
+            "type": "os",
+            "key": "BTW I use"
+        },
+        {
+            "type": "host",
+            "format": "14 inch Thinkpad Pro (Mid 2013)"
+        },
+        "media",
+        "bluetooth",
+        "kernel",
+        "shell",
+        {
+            "type": "display",
+            "preciseRefreshRate": "false",
+            "key": "Display"
+        },
+        "wm",
+        "font",
+        "terminal",
+        {
+            "type": "cpu",
+            "temp": "false",
+            "format": "{1} @ {7}GHz"
+        }, 
+        {
+            "type": "memory",
+            "format": "{2} {3}"
+        },
+	    {
+           "type": "disk",
+	        "key": "Storage",
+            "folders": "/home",
+            "format": "{2} {3}"
+    	},
+        "colors"
+    ],
+    "logo": {
+	"source": "/$HOME/Pictures/vein.ans"
+    },
+    "display": {
+        "percentType": 9 // colored percent number
+    }
+}

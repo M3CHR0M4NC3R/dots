@@ -1,0 +1,7 @@
+configuration {
+	width: 25;
+	font: "SF Mono 14";
+	terminal: "st";
+	height: 10%;
+}
+@theme "colors-rofi-dark"
