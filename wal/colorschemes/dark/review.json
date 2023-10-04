@@ -1,0 +1,27 @@
+{
+    "wallpaper": "/home/sam/Pictures/wallpapers/pool.jpg",
+    "alpha": "100",
+    "special": {
+        "background": "#000711",
+        "foreground": "#bfc1c3",
+        "cursor": "#bfc1c3"
+    },
+    "colors": {
+        "color0": "#000711",
+        "color1": "#00549b",
+        "color2": "#0058a8",
+        "color3": "#0071c0",
+        "color4": "#006ab6",
+        "color5": "#0082c0",
+        "color6": "#0096f3",
+        "color7": "#7f8388",
+        "color8": "#3f454c",
+        "color9": "#0070d1",
+        "color10": "#0076e1",
+        "color11": "#0198ff",
+        "color12": "#008ef3",
+        "color13": "#02acff",
+        "color14": "#48b9fe",
+        "color15": "#bfc1c3"
+    }
+}
