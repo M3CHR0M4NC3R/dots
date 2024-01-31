@@ -1,0 +1,18 @@
+@import "~/.config/rofi/config.rasi"
+configuration{
+	show-icons: false;
+}
+mainbox {
+	children: ["listview"];
+}
+listview {
+	require-input: false;
+	lines: 6;
+}
+window {
+	width: 15%;
+}
+element-text{
+	horizontal-align: 0.5;
+	spacing: 5%;
+}

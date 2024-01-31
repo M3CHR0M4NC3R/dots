@@ -1,0 +1,13 @@
+@import "~/.config/rofi/config.rasi"
+configuration{
+	show-icons: false;
+}
+listview {
+	require-input: false;
+}
+textbox-prompt-colon {
+	str: "󰐹";
+}
+entry {
+	placeholder: "Radio stations";
+}

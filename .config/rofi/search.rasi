@@ -1,0 +1,11 @@
+@import "~/.config/rofi/config.rasi"
+listview{
+	require-input: true;
+}
+entry {
+ placeholder: "Search for files";
+}
+
+textbox-prompt-colon {
+	str: "";
+}
