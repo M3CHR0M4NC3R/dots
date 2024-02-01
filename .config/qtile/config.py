@@ -1,12 +1,12 @@
 from libqtile import bar, layout
 from libqtile.config import Click, Drag, Group, Key, Match, Screen, KeyChord
 from libqtile.lazy import lazy
-from libqtile.utils import guess_terminal
+from libqtile.utils import send_notification
 from libqtile import hook
 from qtile_extras import widget
 
 '''bar import'''
-from bar import widget_defaults, extension_defaults, screens
+from macstylebar import widget_defaults, extension_defaults, screens
 
 import os
 import subprocess
@@ -92,8 +92,7 @@ keys = [
     Key([mod], "y", lazy.next_layout(), desc="Toggle between layouts"),
     #bind changed to mimick pop-os
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
-    Key([mod, "shift"],"f",lazy.window.toggle_fullscreen(),desc="Toggle fullscreen on the focused window",),
-    Key([mod], "t", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
+    #Key([mod], "t", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
     Key([mod, "shift"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "r", lazy.restart(), desc="Restart Qtile"),
     Key([mod, "shift"], "e", lazy.shutdown(), desc="Shutdown Qtile"),
@@ -110,6 +109,7 @@ keys = [
     Key([mod], "e", lazy.spawn(email), desc="Summon email client"),
     Key([mod], "s", lazy.spawn("spotify-launcher"), desc="Summon Spotify"),
     Key([mod], "Space", lazy.spawn("rofi -show drun"), desc="Summon rofi"),
+    Key([mod], "Tab", lazy.spawn(home+"/.config/scripts/SuperTab.sh"), desc="Windows/MacOS window switcher"),
     Key([mod, "control"], "Space", lazy.spawn("rofi -modi emoji -show emoji"), desc="Summon rofi emoji menu"),
     Key([mod, "control"], "m", lazy.spawn(home+"/.config/scripts/rofi-radio.sh"), desc="Summon rofi radio"),
     Key([mod], "p", lazy.spawn(terminalOpen("btop")), desc="Summon rofi"),
@@ -166,9 +166,9 @@ def autostart_once():
     subprocess.run([startupscript])
 
 #start with taskbar hidden
-@hook.subscribe.startup
-def startup():
-    bottom.show(False)
+#@hook.subscribe.startup
+#def startup():
+#    bottom.show(False)
 
 '''groups
   ▄████  ██▀███   ▒█████   █    ██  ██▓███    ██████ 
