@@ -1,10 +1,8 @@
 #!/bin/bash
 
-#v2
-#locate -i $HOME | rofi -threads 0 -dmenu -keep-right -i -p "Files" | xargs -r0 xdg-open
-
-#v1
-FILE=$(locate $HOME | rofi -threads 0  -keep right -dmenu -i -config $HOME/.config/rofi/search.rasi)
+#there are two options for this script, one will omit hidden files
+[ "$1" = "hidden" ] && FILE=$(locate ~ | rofi -threads 0  --keep-right -dmenu -i)
+[ "$1" != "hidden" ] && FILE=$(locate -0 ~ | awk -v RS='\0' '!/\/\./' | rofi -threads 0  --keep-right -dmenu -i)
 
 #save the above output as a variable first, then query what .desktop opens it
 #if that desktop file has terminal=true, hit that shit with alacritty -e
