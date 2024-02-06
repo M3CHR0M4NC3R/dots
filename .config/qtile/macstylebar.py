@@ -149,7 +149,7 @@ screens = [
             #too proud of this one
             widget.Spacer(length=widget_defaults["padding"]*2),
         ], 
-        30, 
+        int(bimbolib.monitorHeight*.03), 
         background=[(colors[0]+"80")],
         #background = "#00000000",
         ),

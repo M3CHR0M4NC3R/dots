@@ -17,6 +17,8 @@ $HOME/.config/wpg/wp_init.sh
 #polybar &
 #$HOME/.config/polybar/launch.sh
 
-compfy & disown
+compfy & disown &
 #$HOME/.config/conky/launch.sh
 
+#touchpad gestures
+libinput-gestures-setup start

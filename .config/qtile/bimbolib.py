@@ -3,6 +3,7 @@ from libqtile.utils import send_notification
 from libqtile.log_utils import logger
 from libqtile.widget import base
 from libqtile.lazy import lazy
+from screeninfo import get_monitors
 #from qtile_extras import widget
 
 '''
@@ -10,12 +11,14 @@ PriorityBox() pseudocode
 accepts list of widgets, from most to least important
 '''
 
-@hook.subscribe.enter_chord
-@hook.subscribe.leave_chord
-def show_hide_chord(*args):
-    send_notification("qtile", "Started key chord.")
-    qtile.widgets_map["windowclassbox"].toggle()
-    qtile.widgets_map["chordbox"].toggle()
+#@hook.subscribe.enter_chord
+#@hook.subscribe.leave_chord
+#def show_hide_chord(*args):
+#    send_notification("qtile", "Started key chord.")
+#    qtile.widgets_map["windowclassbox"].toggle()
+#    qtile.widgets_map["chordbox"].toggle()
+monitorWidth=get_monitors()[0].width
+monitorHeight=get_monitors()[0].height
 
 class WindowClass(base._TextBox):
     """Displays the name of the window that currently has focus"""
@@ -94,3 +97,17 @@ class WindowClass(base._TextBox):
     def finalize(self):
         self.remove_hooks()
         base._TextBox.finalize(self)
+
+@lazy.function
+def increase_gaps(qtile):
+    if(qtile.current_layout.margin<50):
+        qtile.current_layout.margin += 5
+    qtile.current_group.layout_all()
+    layout.cmd_reset
+
+@lazy.function
+def decrease_gaps(qtile):
+    if(qtile.current_layout.margin>0):
+        qtile.current_layout.margin -= 5
+    qtile.current_group.layout_all()
+    layout.cmd_reset

@@ -7,6 +7,7 @@ from qtile_extras import widget
 
 '''bar import'''
 from macstylebar import widget_defaults, extension_defaults, screens
+import bimbolib
 
 import os
 import subprocess
@@ -82,6 +83,10 @@ keys = [
     # Split = all windows displayed
     # Unsplit = 1 window displayed, like Max layout, but still with
     # multiple stack panes
+
+    Key([mod], "minus", bimbolib.decrease_gaps(), desc='decrease gap by 5'),
+    Key([mod], "equal", bimbolib.increase_gaps(), desc='increase gap by 5'),
+
     Key(
         [mod, "shift"],
         "Return",
@@ -94,9 +99,9 @@ keys = [
     Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
     #Key([mod], "t", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
     Key([mod, "shift"], "r", lazy.reload_config(), desc="Reload the config"),
-    Key([mod, "control"], "r", lazy.restart(), desc="Restart Qtile"),
-    Key([mod, "shift"], "e", lazy.shutdown(), desc="Shutdown Qtile"),
-    Key([mod, "shift"], "p", lazy.spawn(home+"/.config/scripts/rofi-power.sh"), desc="Pull up power menu"),
+    #Key([mod, "control"], "r", lazy.restart(), desc="Restart Qtile"),
+    #Key([mod, "shift"], "e", lazy.shutdown(), desc="Shutdown Qtile"),
+    Key([mod, "control"], "p", lazy.spawn(home+"/.config/scripts/rofi-power.sh"), desc="Pull up power menu"),
     Key([mod], "x", lazy.hide_show_bar("bottom"), desc="Toggle taskbar"),
 
     #move left and right between groups
@@ -104,15 +109,15 @@ keys = [
     Key([mod, "control"], "right", lazy.screen.next_group(), desc="next workspace"),
 
     #application shortcuts
-    Key([mod], "w", lazy.spawn("firefox"), desc="Summon web browser"),
+    #Key([mod], "w", lazy.spawn("firefox"), desc="Summon web browser"),
     Key([mod], "Return", lazy.spawn(terminal), desc="Summon terminal"),
-    Key([mod], "e", lazy.spawn(email), desc="Summon email client"),
-    Key([mod], "s", lazy.spawn("spotify-launcher"), desc="Summon Spotify"),
-    Key([mod], "Space", lazy.spawn("rofi -show drun"), desc="Summon rofi"),
+    #Key([mod], "e", lazy.spawn(email), desc="Summon email client"),
+    #Key([mod], "s", lazy.spawn("spotify-launcher"), desc="Summon Spotify"),
+    Key([mod], "Space", lazy.spawn("rofi -show drun -disable-history"), desc="Summon rofi"),
     Key([mod], "Tab", lazy.spawn(home+"/.config/scripts/SuperTab.sh"), desc="Windows/MacOS window switcher"),
     Key([mod, "control"], "Space", lazy.spawn("rofi -modi emoji -show emoji"), desc="Summon rofi emoji menu"),
     Key([mod, "control"], "m", lazy.spawn(home+"/.config/scripts/rofi-radio.sh"), desc="Summon rofi radio"),
-    Key([mod], "p", lazy.spawn(terminalOpen("btop")), desc="Summon rofi"),
+    Key([mod], "p", lazy.spawn(terminalOpen("btop")), desc="Summon task manager"),
     Key([mod], "b", lazy.spawn(terminalOpen("bluetuith")), desc="Summon bluetuith"),
     Key([mod], "t", lazy.spawn(home+"/.config/scripts/wpgThemeMenu.sh"), desc="Summon theme menu"),
 
@@ -121,6 +126,7 @@ keys = [
         Key([], "f", lazy.spawn(terminalOpen("ranger")), desc="Summon ranger"),
         Key([], "g", lazy.spawn("pcmanfm"), desc="Summon pcmanfm"),
         Key([], "s", lazy.spawn(home+"/.config/scripts/fileSearch.sh"), desc="Summon a file search"),
+        Key([], "h", lazy.spawn(home+"/.config/scripts/fileSearch.sh hidden"), desc="Summon a file search with hidden files enabled"),
         ],
         #mode=True,
         name="File Browsers",
@@ -248,7 +254,7 @@ layouts = [
     layout.Floating(
         border_focus=colors[7],
         border_normal=colors[1],
-        border_width=0
+        border_width=0,
         ),
 ]
 
@@ -283,6 +289,11 @@ floating_layout = layout.Floating(
         Match(wm_class="ssh-askpass"),  # ssh-askpass
         Match(title="branchdialog"),  # gitk
         Match(title="pinentry"),  # GPG key password entry
+        Match(wm_class='blueman-manager'),
+        Match(title='Bluetooth-devices'),
+        Match(wm_class='blueman-manager'),
+        Match(wm_class='iwgtk'),
+        Match(wm_class='pavucontrol'),
     ]
 )
 auto_fullscreen = True
