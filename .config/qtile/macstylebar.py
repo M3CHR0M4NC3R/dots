@@ -60,6 +60,13 @@ screens = [
         top=bar.Bar(
         [
             widget.Spacer(length=widget_defaults["padding"]*2,), 
+            widget.TextBox(
+                "󰣇",
+                mouse_callbacks={
+                    "Button1": lazy.spawn("rofi -show drun"),
+                    "Button3": lazy.spawn(home+"/.config/scripts/rofi-power.sh"),
+                }
+            ),
             widget.GroupBox(
                 highlight_method='text',
                 hide_unused=False,
@@ -104,7 +111,7 @@ screens = [
                 objname = "org.mpris.MediaPlayer2.spotify",
                 poll_interval=2,
                 scroll=True,
-                width=(widget_defaults["fontsize"]*15),
+                #width=(widget_defaults["fontsize"]*15),
             ),
             #widget.WidgetBox(widgets=[
                 widget.CPU(
@@ -124,6 +131,7 @@ screens = [
             #    close_button_location='right',
             #),
             widget.Spacer(length=widget_defaults["padding"]*2),
+            widget.Battery(),
             widget.PulseVolume(
                 emoji_list=['󰝟','󰕿', '󰖀', '󰕾'],
                 emoji=True,
@@ -142,7 +150,7 @@ screens = [
             widget.Spacer(length=widget_defaults["padding"]*2),
         ], 
         30, 
-        background=[(colors[0]+"FE"),(colors[0]+"EA")],
+        background=[(colors[0]+"80")],
         #background = "#00000000",
         ),
     )
