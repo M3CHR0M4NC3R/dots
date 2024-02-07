@@ -33,7 +33,7 @@ main() {
 		1)
 			notification "Lofi Girl ☕️🎶";
             URL="https://www.youtube.com/watch?v=jfKfPfyJRdk"
-	    ADDITIONAL_ARGS="--volume=60"
+	    ADDITIONAL_ARGS="--volume=50"
 			break
 			;;
 		2)
@@ -58,7 +58,7 @@ main() {
 		
 		5)
 			notification "breakcore radio 🔪💀🎵"
-            URL="https://www.youtube.com/watch?v=sN_ynMKFp0Q&pp=ygUPYnJlYWtjb3JlIHJhZGlv"
+            URL="https://www.youtube.com/watch?v=fQjhvU0ocao"
 	    ADDITIONAL_ARGS="--volume=60 --no-resume-playback"
 			break
 			;;

@@ -18,3 +18,4 @@ qtile cmd-obj -o cmd -f reload_config
 echo updating lightdm theme!
 cp "$HOME/.config/wpg/wallpapers/$(wpg -c| sed 's/ /_/g')" /usr/share/wallpapers/background.png &
 cp -r $HOME/.themes/FlatColor /usr/share/themes/
+notify-send "Reloaded Colors!"

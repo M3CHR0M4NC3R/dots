@@ -17,7 +17,9 @@ case $1 in
 esac
 
 VOLUME=$(pactl get-sink-volume @DEFAULT_SINK@ | awk '{print$12}' | tr -dc '0-9')
-BAR=$(seq -s "󰹞" $(($VOLUME / 5)) | sed 's/[0-9]//g')
+BAR=$(seq -s "◼" $(($VOLUME / 5)) | sed 's/[0-9]//g')
+EMPTYBAR=$(seq -s "◻" $((20-${#BAR}))  | sed 's/[0-9]//g')
 
 
-notify-send "Volume $VOLUME%" $BAR -t 1500 -r 2593
+
+notify-send "Volume $VOLUME%" "$BAR$EMPTYBAR" -t 1500 -r 2593

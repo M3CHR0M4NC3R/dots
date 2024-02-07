@@ -24,7 +24,8 @@ esac
 
 BRIGHTNESS=$(brillo)
 BRIGHTNESS=${BRIGHTNESS::-3}
-BAR=$(seq -s "󰹞" $(($BRIGHTNESS / 5)) | sed 's/[0-9]//g')
+BAR=$(seq -s "◼" $(($BRIGHTNESS / 5)) | sed 's/[0-9]//g')
+EMPTYBAR=$(seq -s "◻" $((20-${#BAR}))  | sed 's/[0-9]//g')
 
-notify-send "Brightness $BRIGHTNESS%" $BAR -t 1500 -r 2593
+notify-send "Brightness $BRIGHTNESS%" "$BAR$EMPTYBAR" -t 1500 -r 2593
 
