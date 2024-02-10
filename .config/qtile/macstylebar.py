@@ -43,7 +43,7 @@ def noText(text):
 '''
 decoration_group = {
     "decorations": [
-        RectDecoration(colour=colors[0], radius=18, filled=True, group=True)
+        RectDecoration(colour=colors[0]+"B0", radius=12, filled=True, padding_y=2, group=True)
     ],
 }
 widget_defaults = dict(
@@ -60,12 +60,40 @@ screens = [
         top=bar.Bar(
         [
             widget.Spacer(length=widget_defaults["padding"]*2,), 
+            widget.CPU(
+            format=' {load_percent}%',
+            font="SF Mono, Symbols Nerd Font"
+            ), 
+            widget.ThermalSensor(tag_sensor="CPUTIN",format=' {temp:3.1f}{unit}'),
+            widget.ThermalSensor(tag_sensor="edge",format='󰢮 {temp:3.1f}{unit}'),
+            widget.CurrentLayoutIcon(scale=.6,),
+            widget.WidgetBox(
+            widgets=[
+                bimbolib.WindowClass(fmt='<b>{}</b>'),
+            ],
+                name="windowclassbox",
+                start_opened=True,
+                text_closed='',
+                text_open='',
+            ),
+            widget.WidgetBox(
+                widgets=[
+                    widget.Chord(fmt='<b>{}</b>'),
+                ],
+                name="chordbox",
+                start_opened=True,
+                text_closed='',
+                text_open='',
+            ),
+            widget.Spacer(length=bar.STRETCH,),
             widget.TextBox(
                 "󰣇",
+                padding=widget_defaults["padding"]*2,
                 mouse_callbacks={
                     "Button1": lazy.spawn("rofi -show drun"),
                     "Button3": lazy.spawn(home+"/.config/scripts/rofi-power.sh"),
-                }
+                },
+                **decoration_group,
             ),
             widget.GroupBox(
                 highlight_method='text',
@@ -76,34 +104,17 @@ screens = [
                 margin_x=0,
                 padding=(widget_defaults["padding"]*.5),
                 urgent_alert_method='line',
-                urgent_border=colors[6]
+                urgent_border=colors[6],
+                **decoration_group,
             ),
-            widget.CurrentLayoutIcon(scale=.6,),
-            #bimbolib.WindowClass(fmt='<b>{}</b>'),
-            #widget.WindowName(
-            #    fmt='<b>{}</b>',
-            #    #format='{name}',
-            #    format='{class}',
-            #    parse_text=longNameParse,
-            #    empty_group_string='Desktop',
-            #),
-            widget.WidgetBox(
-            widgets=[
-                bimbolib.WindowClass(fmt='<b>{}</b>'),
-            ],
-                name="windowclassbox",
-                start_opened=True,
-                text_closed=' ',
-                text_open=' ',
-            ),
-            widget.WidgetBox(
-                widgets=[
-                    widget.Chord(fmt='<b>{}</b>'),
-                ],
-                name="chordbox",
-                start_opened=True,
-                text_closed=' ',
-                text_open=' ',
+            widget.TextBox(
+                "",
+                padding=widget_defaults["padding"]*2,
+                mouse_callbacks={
+                    "Button1": lazy.spawn(home+"/.config/scripts/fileSearch.sh"),
+                    "Button3": lazy.spawn(home+"/.config/scripts/fileSearch.sh hidden"),
+                },
+                **decoration_group,
             ),
             widget.Spacer(length=bar.STRETCH,),
             widget.Mpris2(
@@ -111,27 +122,10 @@ screens = [
                 objname = "org.mpris.MediaPlayer2.spotify",
                 poll_interval=2,
                 scroll=True,
-                #width=(widget_defaults["fontsize"]*15),
+                width=int(bimbolib.monitorWidth*.1)
             ),
-            #widget.WidgetBox(widgets=[
-                widget.CPU(
-                    format=' {freq_current}GHz {load_percent}%',
-                    font="SF Mono, Symbols Nerd Font"
-                    ), 
-                widget.ThermalSensor(tag_sensor="CPUTIN",format=' {temp:3.1f}{unit}'),
-                widget.ThermalSensor(tag_sensor="edge",format='󰢮 {temp:3.1f}{unit}'),
-                widget.Memory(
-                    format=' {MemUsed:.0f}',
-                    font="SF Mono, Symbols Nerd Font"
-                    ),
-            #    widget.Spacer(length=5),
-            #    ],
-            #    text_closed='󰨚',
-            #    text_open='󰔢',
-            #    close_button_location='right',
-            #),
             widget.Spacer(length=widget_defaults["padding"]*2),
-            widget.Battery(),
+            #widget.Battery(),
             widget.PulseVolume(
                 emoji_list=['󰝟','󰕿', '󰖀', '󰕾'],
                 emoji=True,
@@ -149,8 +143,8 @@ screens = [
             #too proud of this one
             widget.Spacer(length=widget_defaults["padding"]*2),
         ], 
-        int(bimbolib.monitorHeight*.03), 
-        background=[(colors[0]+"80")],
+        int(bimbolib.monitorHeight*.0261111), 
+        background=[(colors[0]+"A0")],
         #background = "#00000000",
         ),
     )

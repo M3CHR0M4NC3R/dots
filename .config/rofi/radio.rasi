@@ -2,12 +2,19 @@
 configuration{
 	show-icons: false;
 }
+window {
+	width: 20%;
+}
 listview {
 	require-input: false;
+	lines: 10;
 }
 textbox-prompt-colon {
 	str: "󰐹";
 }
 entry {
 	placeholder: "Radio stations";
+}
+element-text{
+	horizontal-align: 0.5;
 }

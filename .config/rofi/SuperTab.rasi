@@ -1,0 +1,10 @@
+@import "~/.config/rofi/config.rasi"
+configuration {
+	icon-theme: "Adwaita";
+}
+mainbox {
+	children: ["listview"];
+}
+listview {
+	lines: 10;
+}
