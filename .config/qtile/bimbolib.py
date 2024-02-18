@@ -20,6 +20,10 @@ accepts list of widgets, from most to least important
 monitorWidth=get_monitors()[0].width
 monitorHeight=get_monitors()[0].height
 
+#just returns nothing for text filtering
+def no_text(text):
+    return ""
+
 class WindowClass(base._TextBox):
     """Displays the name of the window that currently has focus"""
 
@@ -102,6 +106,7 @@ class WindowClass(base._TextBox):
 def increase_gaps(qtile):
     if(qtile.current_layout.margin<50):
         qtile.current_layout.margin += 5
+        qtile.current_layout.margin_on_single +=5
     qtile.current_group.layout_all()
     layout.cmd_reset
 
@@ -109,5 +114,6 @@ def increase_gaps(qtile):
 def decrease_gaps(qtile):
     if(qtile.current_layout.margin>0):
         qtile.current_layout.margin -= 5
+        qtile.current_layout.margin_on_single -=5
     qtile.current_group.layout_all()
     layout.cmd_reset
