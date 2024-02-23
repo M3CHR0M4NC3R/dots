@@ -10,15 +10,15 @@ lxpolkit &
 #wal colors
 $HOME/.config/wpg/wp_init.sh
 #feh wallpaper
-~/.fehbg
 
+#widgets
+#~/.config/conky/launch.sh
 
 #autostart programs for qtile
 #polybar &
 #$HOME/.config/polybar/launch.sh
 
-compfy & disown &
+compfy &
 #$HOME/.config/conky/launch.sh
 
 #touchpad gestures
-libinput-gestures-setup start
