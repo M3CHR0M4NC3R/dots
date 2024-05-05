@@ -9,11 +9,15 @@ local awful = require("awful")
 local revelation=require("revelation")
 --animations
 local rubato = require "rubato"
+--lain
+local lain = require("lain")
 require("awful.autofocus")
 --alt tab menu
 local switcher = require("awesome-switcher")
 -- Widget and layout library
 local wibox = require("wibox")
+local spotify_widget = require("awesome-wm-widgets.spotify-widget.spotify")
+local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
 -- Theme handling library
 local beautiful = require("beautiful")
 local menubar_utils = require "menubar.utils"
@@ -60,7 +64,7 @@ beautiful.useless_gap = 2
 beautiful.border_width = 2
 beautiful.border_normal = '#500000'
 beautiful.border_focus = '#700000'
-beautiful.font = "Less Perfect DOS VGA 14"
+beautiful.font = "SF Mono 12"
 beautiful.icon_theme = "Hatter"
 awesome.set_preferred_icon_size(64)
 revelation.init()
@@ -87,14 +91,14 @@ modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts = {
+    -- awful.layout.suit.spiral,
     awful.layout.suit.tile.left,
     awful.layout.suit.floating,
     -- awful.layout.suit.tile.left,
     -- awful.layout.suit.tile.bottom,
     -- awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
+    -- awful.layout.suit.fair,
     -- awful.layout.suit.fair.horizontal,
-    -- awful.layout.suit.spiral,
     -- awful.layout.suit.spiral.dwindle,
     -- awful.layout.suit.max,
     -- awful.layout.suit.max.fullscreen,
@@ -116,6 +120,7 @@ myawesomemenu = {
    { "quit", function() awesome.quit() end },
 }
 powermenu = {
+    {"lock", "xautolock -locknow"},
 	{"suspend", "systemctl suspend"},
 	{"restart", "systemctl reboot"},
 	{"shut down", "systemctl poweroff"},
@@ -203,7 +208,7 @@ awful.screen.connect_for_each_screen(function(s)
     --set_wallpaper(s)
 
     -- Each screen has its own tag table.
-    awful.tag({ "1", "2", "3", "4", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+    awful.tag({ "1", "2", "3", "4", "5", "6", "7" }, s, awful.layout.layouts[1])
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -241,12 +246,12 @@ awful.screen.connect_for_each_screen(function(s)
                             --replace this string
                             widget = awful.widget.clienticon,
                         },
-                        margins = 2,
+                        margins = 0,
                         widget  = wibox.container.margin,
                     },
                     id              = 'background_role',
-                    forced_height   = 24,
-                    forced_width    = 24,
+                    forced_height   = 30,
+                    forced_width    = 30,
                     widget          = wibox.container.background,
                 },
                 shape = gears.shape.rounded_rect,
@@ -259,10 +264,14 @@ awful.screen.connect_for_each_screen(function(s)
         },
     }
     -- Create the wibox
-left_bar=awful.wibar({ position = "left",width=30, screen = s, bg='#202020'})
-top_bar = awful.wibar({ position = "top", height=30, screen = s, bg='#202020'})
-top_border = awful.wibar({ position = "top", screen = s,height=2,bg='#A00000'})
-left_border=awful.wibar({ position = "left",width=2, screen = s, bg='#A00000'})
+left_bar=awful.wibar({ position = "left",width=25, screen = s, bg='#202020'})
+top_bar = awful.wibar({ position = "top", height=25, screen = s, bg='#202020'})
+-- top_border = awful.wibar({ position = "top", screen = s,height=2,bg='#A00000'})
+-- left_border=awful.wibar({ position = "left",width=2, screen = s, bg='#A00000'})
+
+local month_calendar = awful.widget.calendar_popup.month()
+month_calendar:attach(mytextclock, "tr" )
+month_calendar:toggle()
 
     -- Add widgets to the wibox
 top_bar:setup {
@@ -273,13 +282,18 @@ top_bar:setup {
             layout = wibox.layout.fixed.horizontal,
             mylauncher,
 		s.mylayoutbox,
+        lain.widget.cpu(),
             s.mypromptbox,
         },
         nil,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             mykeyboardlayout,
-            wibox.widget.systray(),
+            spotify_widget({
+                font = 'SF Mono 12',
+                max_length = -1,
+                show_tooltip=false
+               }),
         	mytextclock,
         },
     },
@@ -420,7 +434,7 @@ globalkeys = gears.table.join(
 )
 
 clientkeys = gears.table.join(
-    awful.key({ modkey,           }, "f",
+    awful.key({ modkey, "Control"}, "f",
         function (c)
             c.fullscreen = not c.fullscreen
             c:raise()
@@ -565,7 +579,8 @@ awful.rules.rules = {
           "Tor Browser", -- Needs a fixed window size to avoid fingerprinting by screen size.
           "Wpa_gui",
           "veromix",
-          "xtightvncviewer"},
+          "xtightvncviewer",
+            "mpv"},
 
         -- Note that the name property shown in xprop might be set slightly after creation of the client
         -- and the name shown there might not match defined rules here.
@@ -583,6 +598,10 @@ awful.rules.rules = {
     { rule_any = {type = { "normal", "dialog" }
       }, properties = { titlebars_enabled = true }
     },
+    { rule_any = {class = { "steam" }
+      }, properties = { titlebars_enabled = false }
+    },
+
 
     {
     rule_any = {
@@ -615,7 +634,7 @@ client.connect_signal("manage", function (c)
     end
     client.connect_signal("manage", function (c)
     c.shape = function(cr,w,h)
-        gears.shape.rounded_rect(cr,w,h,0)
+        gears.shape.rounded_rect(cr,w,h,5)
     end
 end)
 end)
@@ -636,8 +655,8 @@ client.connect_signal("request::titlebars", function(c)
 
     awful.titlebar(c, {
         size = 18,
-        bg_normal = '#500000',
-        bg_focus = '#700000',
+        bg_normal = '#504030',
+        bg_focus = '#750010',
     }) : setup {
 	{ -- Left
 		{
@@ -645,6 +664,7 @@ client.connect_signal("request::titlebars", function(c)
         		awful.titlebar.widget.maximizedbutton(c),
         		awful.titlebar.widget.minimizebutton (c),
         		awful.titlebar.widget.floatingbutton (c),
+                awful.titlebar.widget.ontopbutton (c),
 			spacing = dpi(7),
         		layout  = wibox.layout.fixed.horizontal
         	},
@@ -673,4 +693,4 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- }}}
 awful.spawn.with_shell("nitrogen --restore")
 awful.spawn.with_shell("picom")
-awful.spawn.with_shell("light-locker")
+awful.spawn.with_shell("~/.config/awesome/scripts/autolock.sh 10 30")
