@@ -10,10 +10,7 @@
             "type": "os",
             "key": "BTW I use"
         },
-        {
-            "type": "host",
-            "format": "14 inch Thinkpad Pro (Mid 2013)"
-        },
+	"host",
         "media",
         "bluetooth",
         "kernel",
@@ -28,9 +25,9 @@
         "terminal",
         {
             "type": "cpu",
-            "temp": "false",
             "format": "{1} @ {7}GHz"
         }, 
+	"gpu",
         {
             "type": "memory",
             "format": "{2} {3}"
@@ -41,12 +38,15 @@
             "folders": "/home",
             "format": "{2} {3}"
     	},
-        "colors"
+        {
+            "type": "colors",
+            "symbol": "circle"
+        }
     ],
     "logo": {
 	"source": "/$HOME/Pictures/vein.ans"
     },
     "display": {
-        "percentType": 9 // colored percent number
+        "percent": { "type": 9 } // colored percent number
     }
 }
