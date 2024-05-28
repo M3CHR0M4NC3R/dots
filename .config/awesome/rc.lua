@@ -62,16 +62,17 @@ end
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 beautiful.useless_gap = 2
 beautiful.border_width = 2
-beautiful.border_normal = '#500000'
-beautiful.border_focus = '#700000'
-beautiful.font = "SF Mono 12"
-beautiful.icon_theme = "Hatter"
+beautiful.border_normal = '#500050'
+beautiful.border_focus = '#700070'
+beautiful.font = "Comic Mono 12"
+beautiful.tasklist_disable_task_name = true
+beautiful.calendar_start_sunday = true
 awesome.set_preferred_icon_size(64)
 revelation.init()
 revelation.tag_name = 'Overview'
 naughty.config.defaults['icon_size'] = 100
-switcher.settings.preview_box_bg = '#FF000020'
-switcher.settings.preview_box_border = '#FF0000FF'
+switcher.settings.preview_box_bg = '#FF00FF20'
+switcher.settings.preview_box_border = '#FF00FFFF'
 switcher.settings.preview_box_title_color = {1,1,1,1}
 switcher.settings.cycle_all_clients = true
 
@@ -128,11 +129,10 @@ powermenu = {
 
 mymainmenu = awful.menu({
     theme = {
-        width = 150
         },
-    items = {{ "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "open terminal", terminal },
-				    { "power", powermenu },
+    items = {{ " ", myawesomemenu },
+                                    { " ", terminal },
+				    { "⏻ ", powermenu },
                                   }
                         })
 
@@ -264,8 +264,8 @@ awful.screen.connect_for_each_screen(function(s)
         },
     }
     -- Create the wibox
-left_bar=awful.wibar({ position = "left",width=25, screen = s, bg='#202020'})
-top_bar = awful.wibar({ position = "top", height=25, screen = s, bg='#202020'})
+left_bar=awful.wibar({ position = "left",width=25, screen = s, bg='#202020A0'})
+top_bar = awful.wibar({ position = "top", height=25, screen = s, bg='#202020A0'})
 -- top_border = awful.wibar({ position = "top", screen = s,height=2,bg='#A00000'})
 -- left_border=awful.wibar({ position = "left",width=2, screen = s, bg='#A00000'})
 
@@ -290,7 +290,7 @@ top_bar:setup {
             layout = wibox.layout.fixed.horizontal,
             mykeyboardlayout,
             spotify_widget({
-                font = 'SF Mono 12',
+                font = 'Comic Mono 12',
                 max_length = -1,
                 show_tooltip=false
                }),
@@ -300,7 +300,7 @@ top_bar:setup {
     {
         s.mytaglist,
 	bottom=2,
-	color='#FF0000',
+	color='#FF00FF',
         valign = "center",
         halign = "center",
         layout = wibox.container.place,
@@ -655,8 +655,8 @@ client.connect_signal("request::titlebars", function(c)
 
     awful.titlebar(c, {
         size = 18,
-        bg_normal = '#504030',
-        bg_focus = '#750010',
+        bg_normal = '#304050',
+        bg_focus = '#700070',
     }) : setup {
 	{ -- Left
 		{
