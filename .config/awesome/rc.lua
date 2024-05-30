@@ -18,6 +18,7 @@ local switcher = require("awesome-switcher")
 local wibox = require("wibox")
 local spotify_widget = require("awesome-wm-widgets.spotify-widget.spotify")
 local cpu_widget = require("awesome-wm-widgets.cpu-widget.cpu-widget")
+local battery_widget = require("battery-widget")
 -- Theme handling library
 local beautiful = require("beautiful")
 local menubar_utils = require "menubar.utils"
@@ -64,8 +65,9 @@ beautiful.useless_gap = 2
 beautiful.border_width = 2
 beautiful.border_normal = '#500050'
 beautiful.border_focus = '#700070'
-beautiful.font = "Comic Mono 12"
+beautiful.font = "Comic Mono, Symbols Nerd Font 12"
 beautiful.tasklist_disable_task_name = true
+beautiful.icon_theme = "Papirus-Dark"
 beautiful.calendar_start_sunday = true
 awesome.set_preferred_icon_size(64)
 revelation.init()
@@ -264,8 +266,8 @@ awful.screen.connect_for_each_screen(function(s)
         },
     }
     -- Create the wibox
-left_bar=awful.wibar({ position = "left",width=25, screen = s, bg='#202020A0'})
-top_bar = awful.wibar({ position = "top", height=25, screen = s, bg='#202020A0'})
+left_bar=awful.wibar({ position = "left",width=25, screen = s, bg='#202020B0'})
+top_bar = awful.wibar({ position = "top", height=25, screen = s, bg='#202020B0'})
 -- top_border = awful.wibar({ position = "top", screen = s,height=2,bg='#A00000'})
 -- left_border=awful.wibar({ position = "left",width=2, screen = s, bg='#A00000'})
 
@@ -289,8 +291,31 @@ top_bar:setup {
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             mykeyboardlayout,
+	    battery_widget {
+		    widget_font = beautiful.font,
+		    ac_prefix = "󰂄",
+		    battery_prefix = {
+		        { 10, "󰁺"},
+		        { 20, "󰁻"},
+		        { 30, "󰁼"},
+		        { 40, "󰁽"},
+		        { 50, "󰁾"},
+		        { 60, "󰁿"},
+		        { 80, "󰂀"},
+		        { 90, "󰂂"},
+		        { 100, "󰁹"},
+		    },
+		    percent_colors={
+			    {20, "red"},
+			    {999, beautiful.fg_normal},
+		    },
+		    alert_threshold = 20,
+		    alert_timeout = 0,
+		    alert_title = "Low battery ${AC_BAT}",
+		    alert_text = "Your Thinkpad will die soon. ${time_est} remaining.",
+		},
             spotify_widget({
-                font = 'Comic Mono 12',
+                font = beautiful.font,
                 max_length = -1,
                 show_tooltip=false
                }),
@@ -352,6 +377,15 @@ globalkeys = gears.table.join(
     ),
     awful.key({ modkey,           }, "w", function () mymainmenu:show() end,
               {description = "show main menu", group = "awesome"}),
+	--volume
+	awful.key({},"XF86AudioRaiseVolume", function () awful.spawn("/home/sam/.config/scripts/volume.sh up") end,
+	{description = "increase volume", group = "system"}),
+	awful.key({},"XF86AudioLowerVolume", function () awful.spawn("/home/sam/.config/scripts/volume.sh down") end,
+	{description = "decrease volume", group = "system"}),
+	awful.key({},"XF86MonBrightnessUp", function () awful.spawn("/home/sam/.config/scripts/brightness.sh up") end,
+	{description = "increase brightness", group = "system"}),
+	awful.key({},"XF86MonBrightnessDown", function () awful.spawn("/home/sam/.config/scripts/brightness.sh down") end,
+	{description = "decrease brightness", group = "system"}),
 
     -- Layout manipulation
     awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end,
@@ -634,11 +668,16 @@ client.connect_signal("manage", function (c)
     end
     client.connect_signal("manage", function (c)
     c.shape = function(cr,w,h)
-        gears.shape.rounded_rect(cr,w,h,5)
+        gears.shape.rounded_rect(cr,w,h,8)
     end
 end)
 end)
 
+--theme icons???
+client.connect_signal("property::class", function(c)
+	if not c.class then return end
+	c.theme_icon = menubar_utils.lookup_icon(string.lower(c.class)) or c.icon
+end)
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
 client.connect_signal("request::titlebars", function(c)
 	    -- buttons for the titlebar
@@ -654,7 +693,7 @@ client.connect_signal("request::titlebars", function(c)
     )
 
     awful.titlebar(c, {
-        size = 18,
+        size = 20,
         bg_normal = '#304050',
         bg_focus = '#700070',
     }) : setup {
@@ -665,7 +704,7 @@ client.connect_signal("request::titlebars", function(c)
         		awful.titlebar.widget.minimizebutton (c),
         		awful.titlebar.widget.floatingbutton (c),
                 awful.titlebar.widget.ontopbutton (c),
-			spacing = dpi(7),
+			spacing = dpi(5),
         		layout  = wibox.layout.fixed.horizontal
         	},
 		left = dpi(7),
