@@ -14,6 +14,8 @@ local lain = require("lain")
 require("awful.autofocus")
 --alt tab menu
 local switcher = require("awesome-switcher")
+--menu library
+--local radical = require("radical")
 -- Widget and layout library
 local wibox = require("wibox")
 local spotify_widget = require("awesome-wm-widgets.spotify-widget.spotify")
@@ -61,14 +63,16 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
-beautiful.useless_gap = 2
-beautiful.border_width = 2
+local nice = require("nice")
+beautiful.useless_gap = dpi(8)
+beautiful.border_width = 0
 beautiful.border_normal = '#500050'
 beautiful.border_focus = '#700070'
-beautiful.font = "Comic Mono, Symbols Nerd Font 12"
+beautiful.font = "SF Mono, Symbols Nerd Font 12"
 beautiful.tasklist_disable_task_name = true
 beautiful.icon_theme = "Papirus-Dark"
 beautiful.calendar_start_sunday = true
+beautiful.bg_normal = "#202020"
 awesome.set_preferred_icon_size(64)
 revelation.init()
 revelation.tag_name = 'Overview'
@@ -77,10 +81,40 @@ switcher.settings.preview_box_bg = '#FF00FF20'
 switcher.settings.preview_box_border = '#FF00FFFF'
 switcher.settings.preview_box_title_color = {1,1,1,1}
 switcher.settings.cycle_all_clients = true
+nice{
+    --titlebar_font=beautiful.font,
+    titlebar_font="SF Pro 12",
+    titlebar_height=30,
+    button_size=13,
+    mb_contextmenu=nil,
+    no_titlebar_maximized=true,
+    titlebar_items = {
+        left={"close", "minimize", "maximize", "floating","ontop"},
+        middle = "title",
+        right={},
+    },
+    close_color = "#BB4040D0",
+    minimize_color= "#BBBB40D0",
+    maximize_color= "#40BB40D0",
+    floating_color= "#40BBBBD0",
+    ontop_color= "#4040BBD0",
+    context_menu_theme = {
+        bg_focus = beautiful.bg_focus,
+        bg_normal = beautiful.bg_normal,
+        border_color = beautiful.border_focus,
+        border_width = 2,
+        fg_focus = beautiful.fg_focus,
+        fg_normal = beautiful.fg_normal,
+        font = beautiful.font,
+        height = 27.5,
+        width = 250,
+}
+}
 
 
 -- This is used later as the default terminal and editor to run.
 terminal = "alacritty"
+applauncher = "rofi -show drun"
 editor = os.getenv("EDITOR") or "vim"
 editor_cmd = terminal .. " -e " .. editor
 files = "pcmanfm"
@@ -114,7 +148,6 @@ awful.layout.layouts = {
 -- }}}
 
 -- {{{ Menu
--- Create a launcher widget and a main menu
 myawesomemenu = {
    { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
    { "manual", terminal .. " -e man awesome" },
@@ -122,19 +155,32 @@ myawesomemenu = {
    { "restart", awesome.restart },
    { "quit", function() awesome.quit() end },
 }
+filemenu = {
+    {"ranger", terminal .. " -e ranger"},
+    {"gui", "pcmanfm"},
+}
 powermenu = {
     {"lock", "xautolock -locknow"},
-	{"suspend", "systemctl suspend"},
-	{"restart", "systemctl reboot"},
-	{"shut down", "systemctl poweroff"},
+    {"suspend", "systemctl suspend"},
+    {"restart", "systemctl reboot"},
+    {"shut down", "systemctl poweroff"},
 }
 
 mymainmenu = awful.menu({
     theme = {
+        width=250,
+        height=25,
+        bg_normal=beautiful.bg_normal,
+        font="SF Pro, Symbols Nerd Font 12",
+        submenu_icon=nil,
+        submenu="left",
+        border_width=2,
         },
-    items = {{ " ", myawesomemenu },
-                                    { " ", terminal },
-				    { "⏻ ", powermenu },
+    items = {{ " awesome", myawesomemenu, nil },
+                                    { " terminal", terminal, nil },
+                                    { " files", filemenu, nil},
+                                    { "󰀻 applications", applauncher, nil },
+                                    { "⏻ power", powermenu, nil },
                                   }
                         })
 
@@ -181,7 +227,7 @@ local tasklist_buttons = gears.table.join(
                                               end
                                           end),
                      awful.button({ }, 3, function()
-                                              awful.menu.client_list({ theme = { width = 250 } })
+                                              awful.menu.client_list()
                                           end),
                      awful.button({ }, 4, function ()
                                               awful.client.focus.byidx(1)
@@ -252,8 +298,8 @@ awful.screen.connect_for_each_screen(function(s)
                         widget  = wibox.container.margin,
                     },
                     id              = 'background_role',
-                    forced_height   = 30,
-                    forced_width    = 30,
+                    --forced_height   = 30,
+                    --forced_width    = 30,
                     widget          = wibox.container.background,
                 },
                 shape = gears.shape.rounded_rect,
@@ -266,14 +312,50 @@ awful.screen.connect_for_each_screen(function(s)
         },
     }
     -- Create the wibox
-left_bar=awful.wibar({ position = "left",width=25, screen = s, bg='#202020B0'})
-top_bar = awful.wibar({ position = "top", height=25, screen = s, bg='#202020B0'})
+--left_bar=awful.wibar({ position = "left",width=25, screen = s, bg=beautiful.bg_normal})
+top_bar = awful.wibar({ 
+    position = "top",
+    height=25,
+    margins = {
+        top    = dpi(8),
+        left    = dpi(8),
+        right    = dpi(8),
+        bottom = 0
+    },screen = s,
+    bg=beautiful.bg_normal,
+    shape = function(cr, w, h)
+		gears.shape.rounded_rect(cr, w, h, 10)
+	end,
+})
 -- top_border = awful.wibar({ position = "top", screen = s,height=2,bg='#A00000'})
 -- left_border=awful.wibar({ position = "left",width=2, screen = s, bg='#A00000'})
 
 local month_calendar = awful.widget.calendar_popup.month()
 month_calendar:attach(mytextclock, "tr" )
-month_calendar:toggle()
+        myBattery=battery_widget {
+            adapter = "...",
+            widget_font = beautiful.font,
+            ac_prefix = "󰂄",
+            battery_prefix = {
+                { 10, "󰁺"},
+                { 20, "󰁻"},
+                { 30, "󰁼"},
+                { 40, "󰁽"},
+                { 50, "󰁾"},
+                { 60, "󰁿"},
+                { 80, "󰂀"},
+                { 90, "󰂂"},
+                { 100, "󰁹"},
+            },
+            percent_colors={
+                {20, "red"},
+                {999, beautiful.fg_normal},
+            },
+            alert_threshold = 20,
+            alert_timeout = 0,
+            alert_title = "Low battery ${AC_BAT}",
+            alert_text = "Your Thinkpad will die soon. ${time_est} remaining.",
+        },
 
     -- Add widgets to the wibox
 top_bar:setup {
@@ -283,64 +365,63 @@ top_bar:setup {
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
             mylauncher,
-		s.mylayoutbox,
+        s.mylayoutbox,
         lain.widget.cpu(),
             s.mypromptbox,
         },
         nil,
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            mykeyboardlayout,
-	    battery_widget {
-		    widget_font = beautiful.font,
-		    ac_prefix = "󰂄",
-		    battery_prefix = {
-		        { 10, "󰁺"},
-		        { 20, "󰁻"},
-		        { 30, "󰁼"},
-		        { 40, "󰁽"},
-		        { 50, "󰁾"},
-		        { 60, "󰁿"},
-		        { 80, "󰂀"},
-		        { 90, "󰂂"},
-		        { 100, "󰁹"},
-		    },
-		    percent_colors={
-			    {20, "red"},
-			    {999, beautiful.fg_normal},
-		    },
-		    alert_threshold = 20,
-		    alert_timeout = 0,
-		    alert_title = "Low battery ${AC_BAT}",
-		    alert_text = "Your Thinkpad will die soon. ${time_est} remaining.",
-		},
+        battery_widget {
+            widget_font = beautiful.font,
+            ac_prefix = "󰂄",
+            battery_prefix = {
+                { 10,  "󰁺"},
+                { 20,  "󰁻"},
+                { 30,  "󰁼"},
+                { 40,  "󰁽"},
+                { 50,  "󰁾"},
+                { 60,  "󰁿"},
+                { 80,  "󰂀"},
+                { 90,  "󰂂"},
+                { 100, "󰁹"},
+            },
+            percent_colors={
+                {20, "red"},
+                {999, beautiful.fg_normal},
+            },
+            alert_threshold = 20,
+            alert_timeout = 0,
+            alert_title = "Low battery ${AC_BAT}",
+            alert_text = "Your Thinkpad will die soon. ${time_est} remaining.",
+        },
             spotify_widget({
                 font = beautiful.font,
                 max_length = -1,
                 show_tooltip=false
                }),
-        	mytextclock,
+            mytextclock,
         },
     },
     {
         s.mytaglist,
-	bottom=2,
-	color='#FF00FF',
+    bottom=2,
+    color='#FF00FF',
         valign = "center",
         halign = "center",
         layout = wibox.container.place,
     }
 }
 
-left_bar:setup{
-	layout = wibox.layout.stack,
-	{
-			layout = wibox.container.place,
-			vertlist_widget,
-            valign = "center",
-            halign = "center",
-	},
-}
+--left_bar:setup{
+--    layout = wibox.layout.stack,
+--    {
+--            layout = wibox.container.place,
+--            vertlist_widget,
+--            valign = "center",
+--            halign = "center",
+--    },
+--}
 end)
 -- }}}
 
@@ -351,7 +432,17 @@ root.buttons(gears.table.join(
     awful.button({ }, 5, awful.tag.viewprev)
 ))
 -- }}}
+function show_menu_centered(menu)
+    -- Get the geometry of the primary screen
+    local screen_geometry = awful.screen.focused().geometry
 
+    -- Calculate the center position
+    local x = screen_geometry.x + (screen_geometry.width / 2) - (menu.wibox.width / 2)
+    local y = screen_geometry.y + (screen_geometry.height / 2) - (menu.wibox.height / 2)
+
+    -- Show the menu at the calculated position
+    menu:show({coords = {x = x, y = y}})
+end
 -- {{{ Key bindings
 globalkeys = gears.table.join(
     awful.key({ modkey,           }, "s",      hotkeys_popup.show_help,
@@ -375,17 +466,17 @@ globalkeys = gears.table.join(
         end,
         {description = "focus previous by index", group = "client"}
     ),
-    awful.key({ modkey,           }, "w", function () mymainmenu:show() end,
+    awful.key({ modkey,           }, "w", function () show_menu_centered(mymainmenu) end,
               {description = "show main menu", group = "awesome"}),
-	--volume
-	awful.key({},"XF86AudioRaiseVolume", function () awful.spawn("/home/sam/.config/scripts/volume.sh up") end,
-	{description = "increase volume", group = "system"}),
-	awful.key({},"XF86AudioLowerVolume", function () awful.spawn("/home/sam/.config/scripts/volume.sh down") end,
-	{description = "decrease volume", group = "system"}),
-	awful.key({},"XF86MonBrightnessUp", function () awful.spawn("/home/sam/.config/scripts/brightness.sh up") end,
-	{description = "increase brightness", group = "system"}),
-	awful.key({},"XF86MonBrightnessDown", function () awful.spawn("/home/sam/.config/scripts/brightness.sh down") end,
-	{description = "decrease brightness", group = "system"}),
+    --volume
+    awful.key({},"XF86AudioRaiseVolume", function () awful.spawn("/home/sam/.config/scripts/volume.sh up") end,
+    {description = "increase volume", group = "system"}),
+    awful.key({},"XF86AudioLowerVolume", function () awful.spawn("/home/sam/.config/scripts/volume.sh down") end,
+    {description = "decrease volume", group = "system"}),
+    awful.key({},"XF86MonBrightnessUp", function () awful.spawn("/home/sam/.config/scripts/brightness.sh up") end,
+    {description = "increase brightness", group = "system"}),
+    awful.key({},"XF86MonBrightnessDown", function () awful.spawn("/home/sam/.config/scripts/brightness.sh down") end,
+    {description = "decrease brightness", group = "system"}),
 
     -- Layout manipulation
     awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end,
@@ -411,7 +502,7 @@ globalkeys = gears.table.join(
     awful.key({ modkey,           }, "f", function () awful.spawn(files) end,
               {description = "open files", group = "launcher"}),
     awful.key({ }, "Print", function () awful.util.spawn("flameshot gui") end,
-    		{description = "take a screenshot", group = "launcher"}),
+            {description = "take a screenshot", group = "launcher"}),
     awful.key({ modkey, "Control" }, "r", awesome.restart,
               {description = "reload awesome", group = "awesome"}),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit,
@@ -463,8 +554,8 @@ globalkeys = gears.table.join(
     -- Menubar
     awful.key({ modkey }, "p", function() menubar.show() end,
               {description = "show the menubar", group = "launcher"}),
-	 awful.key({modkey}, "space", function() awful.spawn.with_shell("rofi -show drun") end,
-	 {description = "open rofi", group = "launcher"})
+     awful.key({modkey}, "space", function() awful.spawn.with_shell("rofi -show drun") end,
+     {description = "open rofi", group = "launcher"})
 )
 
 clientkeys = gears.table.join(
@@ -509,7 +600,7 @@ clientkeys = gears.table.join(
             c:raise()
         end ,
         {description = "(un)maximize horizontally", group = "client"}),
-	awful.key({ modkey, }, "d", revelation)
+    awful.key({ modkey, }, "d", revelation)
 )
 
 -- Bind all key numbers to tags.
@@ -645,9 +736,9 @@ awful.rules.rules = {
     },
     properties = {
         ontop = true,
-	border_width = false,
-	focusable = false,
-	type = dock
+    border_width = false,
+    focusable = false,
+    type = dock
     }
 }
 }
@@ -675,52 +766,52 @@ end)
 
 --theme icons???
 client.connect_signal("property::class", function(c)
-	if not c.class then return end
-	c.theme_icon = menubar_utils.lookup_icon(string.lower(c.class)) or c.icon
+    if not c.class then return end
+    c.theme_icon = menubar_utils.lookup_icon(string.lower(c.class)) or c.icon
 end)
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
-client.connect_signal("request::titlebars", function(c)
-	    -- buttons for the titlebar
-	    local buttons = gears.table.join(
-        awful.button({ }, 1, function()
-            c:emit_signal("request::activate", "titlebar", {raise = true})
-            awful.mouse.client.move(c)
-        end),
-        awful.button({ }, 3, function()
-            c:emit_signal("request::activate", "titlebar", {raise = true})
-            awful.mouse.client.resize(c)
-        end)
-    )
-
-    awful.titlebar(c, {
-        size = 20,
-        bg_normal = '#304050',
-        bg_focus = '#700070',
-    }) : setup {
-	{ -- Left
-		{
-        		awful.titlebar.widget.closebutton    (c),
-        		awful.titlebar.widget.maximizedbutton(c),
-        		awful.titlebar.widget.minimizebutton (c),
-        		awful.titlebar.widget.floatingbutton (c),
-                awful.titlebar.widget.ontopbutton (c),
-			spacing = dpi(5),
-        		layout  = wibox.layout.fixed.horizontal
-        	},
-		left = dpi(7),
-		widget = wibox.container.margin,
-	},-- End Left
-        { -- Middle
-           	{ -- Title
-           	   	align  = "center",
-           	   	widget = awful.titlebar.widget.titlewidget(c)
-           	},
-            	buttons = buttons,
-            	layout  = wibox.layout.flex.horizontal
-        }, -- End Middle
-        layout = wibox.layout.align.horizontal
-    }
-end)
+--client.connect_signal("request::titlebars", function(c)
+--        -- buttons for the titlebar
+--        local buttons = gears.table.join(
+--        awful.button({ }, 1, function()
+--            c:emit_signal("request::activate", "titlebar", {raise = true})
+--            awful.mouse.client.move(c)
+--        end),
+--        awful.button({ }, 3, function()
+--            c:emit_signal("request::activate", "titlebar", {raise = true})
+--            awful.mouse.client.resize(c)
+--        end)
+--    )
+--
+--    awful.titlebar(c, {
+--        size = 20,
+--        bg_normal = '#304050',
+--        bg_focus = '#700070',
+--    }) : setup {
+--    { -- Left
+--        {
+--                awful.titlebar.widget.closebutton    (c),
+--                awful.titlebar.widget.maximizedbutton(c),
+--                --awful.titlebar.widget.minimizebutton (c),
+--                awful.titlebar.widget.floatingbutton (c),
+--                awful.titlebar.widget.ontopbutton (c),
+--            spacing = dpi(5),
+--                layout  = wibox.layout.fixed.horizontal
+--            },
+--        left = dpi(7),
+--        widget = wibox.container.margin,
+--    },-- End Left
+--        { -- Middle
+--            { -- Title
+--                align  = "center",
+--                widget = awful.titlebar.widget.titlewidget(c)
+--            },
+--                buttons = buttons,
+--                layout  = wibox.layout.flex.horizontal
+--        }, -- End Middle
+--        layout = wibox.layout.align.horizontal
+--    }
+--end)
 
 -- Enable sloppy focus, so that focus follows mouse.
 client.connect_signal("mouse::enter", function(c)
